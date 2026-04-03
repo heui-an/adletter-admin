@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>애드레터 제작 도구</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  header .logo {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+  }
+
+  header h1 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  header .divider {
+    color: #ccc;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 0;
+    height: calc(100vh - 57px);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* ── 좌측 폼 패널 ── */
+  .panel {
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    padding: 28px 28px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  label span {
+    font-size: 11px;
+    color: #999;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  input[type="text"], input[type="url"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1d1d1f;
+    background: #fafafa;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+    background: #fff;
+  }
+
+  .filename-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .filename-row input {
+    flex: 1;
+  }
+
+  .ext {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  .img-preview-wrap {
+    margin-top: 4px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    background: #f5f5f7;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-preview-wrap img {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .img-placeholder {
+    font-size: 12px;
+    color: #bbb;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .img-input-tabs {
+    display: flex;
+    gap: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .img-tab {
+    flex: 1;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    background: #f5f5f7;
+    color: #888;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .img-tab.active {
+    background: #0071e3;
+    color: #fff;
+  }
+
+  .img-tab-content { display: none; }
+  .img-tab-content.active { display: flex; flex-direction: column; gap: 6px; }
+
+  .drop-zone {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fafafa;
+  }
+
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: #0071e3;
+    background: #f0f7ff;
+  }
+
+  .drop-zone p {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 6px;
+  }
+
+  .drop-zone .icon { font-size: 24px; }
+
+  .drop-zone input[type="file"] { display: none; }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: #0071e3;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #0077ed;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,113,227,0.3);
+  }
+
+  .btn-primary:active {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .btn-secondary:hover {
+    background: #e5e5e5;
+  }
+
+  .toast {
+    display: none;
+    background: #1d1d1f;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .toast.show {
+    display: block;
+    animation: fadein 0.2s ease, fadeout 0.3s ease 1.7s forwards;
+  }
+
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeout { to { opacity: 0; } }
+
+  /* ── 우측 프리뷰 패널 ── */
+  .preview-panel {
+    background: #ededed;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .preview-toolbar {
+    background: #f5f5f7;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .preview-toolbar .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ddd;
+  }
+
+  .preview-toolbar .dot.red { background: #ff5f57; }
+  .preview-toolbar .dot.yellow { background: #ffbd2e; }
+  .preview-toolbar .dot.green { background: #28c840; }
+
+  .preview-frame-wrap {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+  }
+
+  iframe {
+    width: 780px;
+    border: none;
+    background: #fff;
+    height: 600px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    transform-origin: top left;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">동아사이언스</span>
+  <span class="divider">|</span>
+  <h1>애드레터 제작 도구</h1>
+</header>
+
+<div class="container">
+
+  <!-- 좌측 입력 패널 -->
+  <div class="panel">
+    <h2>광고 정보 입력</h2>
+
+    <div class="field">
+      <label>광고 제목 <span>이미지 alt 텍스트</span></label>
+      <textarea id="altText" rows="2" placeholder="예: (광고) 2026고흥우주항공축제_더현대서울"></textarea>
+    </div>
+
+    <div class="field">
+      <label>이미지 <span>메인 배너</span></label>
+
+      <div class="img-input-tabs">
+        <button class="img-tab active" onclick="switchImgTab('url')">URL 입력</button>
+        <button class="img-tab" onclick="switchImgTab('file')">파일 업로드</button>
+      </div>
+
+      <div class="img-tab-content active" id="tabUrl">
+        <input type="url" id="imgUrl" placeholder="http://img.dongascience.com/letter/202604/..." oninput="onUrlInput()">
+      </div>
+
+      <div class="img-tab-content" id="tabFile">
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+          <div class="icon">🖼️</div>
+          <p>클릭하거나 파일을 여기에 드래그</p>
+          <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
+          <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
+        </div>
+        <p id="uploadedFilename" style="font-size:11px; color:#888; display:none;"></p>
+      </div>
+
+      <div class="img-preview-wrap" id="imgPreviewWrap">
+        <p class="img-placeholder">이미지를 입력하면 미리보기가 표시됩니다</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>연결 링크 URL <span>클릭 시 이동</span></label>
+      <input type="url" id="linkUrl" placeholder="https://...">
+    </div>
+
+    <div class="field">
+      <label>파일명 <span>저장할 파일 이름</span></label>
+      <div class="filename-row">
+        <input type="text" id="filename" placeholder="예: 260405_팝플_신상품">
+        <span class="ext">.html</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="downloadHtml()">⬇ HTML 파일 다운로드</button>
+      <button class="btn btn-secondary" onclick="updatePreview()">🔄 미리보기 새로고침</button>
+      <div class="toast" id="toast">✅ 다운로드 완료!</div>
+    </div>
+  </div>
+
+  <!-- 우측 프리뷰 -->
+  <div class="preview-panel">
+    <div class="preview-toolbar">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+      <span style="margin-left:8px;">이메일 미리보기</span>
+    </div>
+    <div class="preview-frame-wrap">
+      <iframe id="previewFrame"></iframe>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TEMPLATE = (alt, imgUrl, linkUrl) => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div style="min-width:800px;padding:20px 0 20px 0;margin:0px;font-family:dotum,helvetica,sans-serif;font-size:12px;color:#2f2f2f;background:#ededed; text-align:center;">
+        <table width="780" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" align="center" style="padding:0; margin:0 auto; line-height:0;">
+            <tbody>
+                <tr>
+                    <td colspan="3" style="line-height:0;"><img src="http://img.dongascience.com/letter/common/bg_top.gif" border="0"></td>
+                </tr>
+                <tr>
+                    <td width="39" style="border-left:1px solid #e6e6e6;"><img src="http://img.dongascience.com/letter/common/bg_hidden.gif" border="0"></td>
+                    <td><table width="700" cellpadding="0" cellspacing="0" border="0" style="padding:0; margin:0; line-height:0;">
+                            <tbody>
+                                <tr>
+                                    <td height="20" style="line-height:0;"></td>
+                                </tr>
+                                <tr>
+                                    <td width="500" valign="top" style="line-height:0;"><h1 style="margin:0px;padding:0 0 20px 0; text-align:center"> <a href="http://www.dongascience.com" target="_blank"><img src="http://img.dongascience.com/news2015/images/letter/letter_logo2016.gif" alt="동아사이언스" width="139" style="padding:0px;margin:0;border:0px;"></a> </h1></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0;margin:0;line-height:0;"><a href="${linkUrl}" target="_blank"><img src="${imgUrl}" alt="${alt}" width="700" border="0" /></a></td>
+                                </tr>
+                                <tr>
+                                    <td width="100%" style="padding:20px 0 0 0; color:#888; font-size:12px; letter-spacing:-1px; line-height:18px;" align="left"><img width="99" alt="" src="http://img.dongascience.com/news2015/images/letter/letter_logo_footer.gif" height="21"><br /><br />
+                                        본 메일은 동아사이언스가 이전에 회원님의 이메일 수신동의여부를 확인한 결과 수신을 동의하였기에 발송되었습니다. <span style="color:#555">수신을 원치 않으시면 <a style="text-decoration:none" href="https://www.dongascience.com/ad/refuse/[$email]" target="_blank"><strong style="color:#555">[여기]</strong></a>를 클릭</span>하여 주시기 바랍니다. To unsubscribe this e-mail, click here 본 메일은 발신전용으로 회신을 통한 문의는 처리되지 않으며, <span style="color:#555">문의사항은 <a style="text-decoration:none" href="http://help.dongascience.com" target="_blank"><strong style="color:#555">[고객센터]</strong></a>를 클릭</span>하세요.<br />
+                                        (주)동아사이언스｜대표이사 : 장경애｜(03737) 서울시 서대문구 충정로 29, 10층｜고객센터 : 02-6749-2000｜Fax : 02-3148-0809｜사업자등록번호 : 101-81-62201｜통신판매업신고 : 제2024-서울서대문-0682호｜개인정보관리책임자 : 주세훈 privacy@dongascience.com <br />
+                                        <span style="color:#555; letter-spacing:0">Copyright &copy; Dongascience. All rights reserved.</span></td>
+                                </tr>
+                                <tr>
+                                    <td height="32" style="line-height:0;"></td>
+                                </tr>
+                            </tbody>
+                        </table></td>
+                    <td width="39" style="border-right:1px solid #e6e6e6;"><img src="http://img.dongascience.com/letter/common/bg_hidden.gif" border="0"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="line-height:0;"><img src="http://img.dongascience.com/letter/common/bg_bot.gif" border="0"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>`;
+
+  let activeImgSrc = ''; // URL 또는 data URL
+
+  function switchImgTab(tab) {
+    document.querySelectorAll('.img-tab').forEach((el, i) => {
+      el.classList.toggle('active', (i === 0) === (tab === 'url'));
+    });
+    document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
+    document.getElementById('tabFile').classList.toggle('active', tab === 'file');
+
+    if (tab === 'url') {
+      activeImgSrc = document.getElementById('imgUrl').value.trim();
+    }
+    updatePreview();
+  }
+
+  function onUrlInput() {
+    activeImgSrc = document.getElementById('imgUrl').value.trim();
+    updateImgPreview();
+  }
+
+  function onFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) loadFile(file);
+  }
+
+  function onDragOver(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.add('dragover');
+  }
+
+  function onDragLeave(e) {
+    document.getElementById('dropZone').classList.remove('dragover');
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) loadFile(file);
+  }
+
+  function loadFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      activeImgSrc = e.target.result;
+      const label = document.getElementById('uploadedFilename');
+      label.textContent = `📎 ${file.name}`;
+      label.style.display = 'block';
+      updateImgPreview();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function getValues() {
+    return {
+      alt: document.getElementById('altText').value.trim(),
+      imgUrl: activeImgSrc,
+      linkUrl: document.getElementById('linkUrl').value.trim(),
+      filename: document.getElementById('filename').value.trim(),
+    };
+  }
+
+  function updateImgPreview() {
+    const wrap = document.getElementById('imgPreviewWrap');
+    if (activeImgSrc) {
+      wrap.innerHTML = `<img src="${activeImgSrc}" alt="미리보기" onerror="this.parentElement.innerHTML='<p class=\\'img-placeholder\\'>이미지를 불러올 수 없습니다</p>'">`;
+    } else {
+      wrap.innerHTML = '<p class="img-placeholder">이미지를 입력하면 미리보기가 표시됩니다</p>';
+    }
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const { alt, imgUrl, linkUrl } = getValues();
+    const html = TEMPLATE(alt, imgUrl, linkUrl);
+    const frame = document.getElementById('previewFrame');
+    frame.srcdoc = html;
+
+    frame.onload = () => {
+      try {
+        const h = frame.contentDocument.body.scrollHeight;
+        frame.style.height = Math.max(h + 20, 400) + 'px';
+      } catch(e) {}
+    };
+  }
+
+  function downloadHtml() {
+    const { alt, imgUrl, linkUrl, filename } = getValues();
+    if (!filename) { alert('파일명을 입력해 주세요.'); return; }
+
+    const html = TEMPLATE(alt, imgUrl, linkUrl);
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename.endsWith('.html') ? filename : filename + '.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    const toast = document.getElementById('toast');
+    toast.classList.remove('show');
+    void toast.offsetWidth;
+    toast.classList.add('show');
+  }
+
+  ['altText', 'linkUrl'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+
+  function scaleIframe() {
+    const wrap = document.querySelector('.preview-frame-wrap');
+    const frame = document.getElementById('previewFrame');
+    const available = wrap.clientWidth - 48; // 24px padding 양쪽
+    const scale = Math.min(1, available / 780);
+    const offsetX = (available - 780) / 2; // 중앙 정렬 오프셋
+    frame.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+    frame.style.transformOrigin = 'top left';
+    frame.style.marginBottom = `${(frame.offsetHeight * scale - frame.offsetHeight)}px`;
+  }
+
+  new ResizeObserver(scaleIframe).observe(document.querySelector('.preview-frame-wrap'));
+
+  updatePreview();
+  scaleIframe();
+</script>
+</body>
+</html>
