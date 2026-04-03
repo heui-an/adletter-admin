@@ -357,7 +357,11 @@
           <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
           <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
         </div>
-        <p id="uploadedFilename" style="font-size:11px; color:#888; display:none;"></p>
+        <div id="serverPathWrap" style="display:none; flex-direction:column; gap:4px;">
+          <label style="font-size:11px; color:#888;">서버 저장 경로 <span style="color:#bbb;">(수정 가능)</span></label>
+          <input type="text" id="serverImgUrl" oninput="updatePreview()" style="font-size:12px; font-family: monospace;">
+          <p style="font-size:11px; color:#f59e0b;">⚠️ 미리보기는 로컬 이미지로 표시됩니다. HTML에는 위 서버 URL이 사용됩니다.</p>
+        </div>
       </div>
 
       <div class="img-preview-wrap" id="imgPreviewWrap">
@@ -379,6 +383,23 @@
     </div>
 
     <div class="actions">
+      <div id="imgEmbedOption" style="display:none; background:#f5f5f7; border-radius:8px; padding:12px; gap:8px; flex-direction:column;">
+        <label style="font-size:12px; font-weight:600; color:#555;">HTML에 삽입할 이미지</label>
+        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-weight:400;">
+          <input type="radio" name="imgEmbed" value="server" checked style="margin-top:2px; accent-color:#0071e3;">
+          <span style="font-size:12px; line-height:1.5;">
+            <strong>서버 URL</strong><br>
+            <span style="color:#888;">실제 발송용. 이미지가 서버에 올라가 있어야 합니다.</span>
+          </span>
+        </label>
+        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-weight:400;">
+          <input type="radio" name="imgEmbed" value="local" style="margin-top:2px; accent-color:#0071e3;">
+          <span style="font-size:12px; line-height:1.5;">
+            <strong>로컬 이미지 (base64)</strong><br>
+            <span style="color:#888;">미리보기·내부 확인용. 이메일 발송 시 깨질 수 있습니다.</span>
+          </span>
+        </label>
+      </div>
       <button class="btn btn-primary" onclick="downloadHtml()">⬇ HTML 파일 다운로드</button>
       <button class="btn btn-secondary" onclick="updatePreview()">🔄 미리보기 새로고침</button>
       <div class="toast" id="toast">✅ 다운로드 완료!</div>
@@ -448,14 +469,17 @@
 </body>
 </html>`;
 
-  let activeImgSrc = ''; // URL 또는 data URL
+  let activeImgSrc = '';   // 미리보기용 (blob URL 또는 입력 URL)
+  let activeImgMode = 'url'; // 'url' | 'file'
 
   function switchImgTab(tab) {
+    activeImgMode = tab;
     document.querySelectorAll('.img-tab').forEach((el, i) => {
       el.classList.toggle('active', (i === 0) === (tab === 'url'));
     });
     document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
     document.getElementById('tabFile').classList.toggle('active', tab === 'file');
+    document.getElementById('imgEmbedOption').style.display = tab === 'file' ? 'flex' : 'none';
 
     if (tab === 'url') {
       activeImgSrc = document.getElementById('imgUrl').value.trim();
@@ -490,21 +514,35 @@
   }
 
   function loadFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      activeImgSrc = e.target.result;
-      const label = document.getElementById('uploadedFilename');
-      label.textContent = `📎 ${file.name}`;
-      label.style.display = 'block';
-      updateImgPreview();
-    };
-    reader.readAsDataURL(file);
+    // 미리보기용 blob URL
+    activeImgSrc = URL.createObjectURL(file);
+
+    // 서버 저장 경로 자동 생성
+    const now = new Date();
+    const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const serverUrl = `http://img.dongascience.com/letter/${yyyymm}/${file.name}`;
+    document.getElementById('serverImgUrl').value = serverUrl;
+    document.getElementById('serverPathWrap').style.display = 'flex';
+
+    // 드롭존 텍스트 업데이트
+    document.getElementById('dropZone').querySelector('p').textContent = `📎 ${file.name}`;
+
+    updateImgPreview();
   }
 
-  function getValues() {
+  function getValues({ forDownload = false } = {}) {
+    let imgUrl = activeImgSrc;
+    if (activeImgMode === 'file' && forDownload) {
+      const choice = document.querySelector('input[name="imgEmbed"]:checked').value;
+      imgUrl = choice === 'server'
+        ? document.getElementById('serverImgUrl').value.trim()
+        : activeImgSrc; // base64
+    } else if (activeImgMode === 'file') {
+      imgUrl = activeImgSrc; // 미리보기는 항상 로컬
+    }
     return {
       alt: document.getElementById('altText').value.trim(),
-      imgUrl: activeImgSrc,
+      imgUrl,
       linkUrl: document.getElementById('linkUrl').value.trim(),
       filename: document.getElementById('filename').value.trim(),
     };
@@ -535,7 +573,7 @@
   }
 
   function downloadHtml() {
-    const { alt, imgUrl, linkUrl, filename } = getValues();
+    const { alt, imgUrl, linkUrl, filename } = getValues({ forDownload: true });
     if (!filename) { alert('파일명을 입력해 주세요.'); return; }
 
     const html = TEMPLATE(alt, imgUrl, linkUrl);
