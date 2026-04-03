@@ -469,7 +469,8 @@
 </body>
 </html>`;
 
-  let activeImgSrc = '';   // 미리보기용 (blob URL 또는 입력 URL)
+  let activeImgSrc = '';     // 미리보기용 (blob URL 또는 입력 URL)
+  let activeImgBase64 = '';  // 로컬 임베드용 base64
   let activeImgMode = 'url'; // 'url' | 'file'
 
   function switchImgTab(tab) {
@@ -517,6 +518,11 @@
     // 미리보기용 blob URL
     activeImgSrc = URL.createObjectURL(file);
 
+    // 로컬 임베드용 base64 별도 저장
+    const reader = new FileReader();
+    reader.onload = (e) => { activeImgBase64 = e.target.result; };
+    reader.readAsDataURL(file);
+
     // 서버 저장 경로 자동 생성
     const now = new Date();
     const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -536,7 +542,7 @@
       const choice = document.querySelector('input[name="imgEmbed"]:checked').value;
       imgUrl = choice === 'server'
         ? document.getElementById('serverImgUrl').value.trim()
-        : activeImgSrc; // base64
+        : activeImgBase64; // base64
     } else if (activeImgMode === 'file') {
       imgUrl = activeImgSrc; // 미리보기는 항상 로컬
     }
