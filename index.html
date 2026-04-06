@@ -359,31 +359,20 @@
     <div class="field">
       <label>이미지 <span>메인 배너</span></label>
 
-      <div class="img-input-tabs">
-        <button class="img-tab active" onclick="switchImgTab('url')">URL 입력</button>
-        <button class="img-tab" onclick="switchImgTab('file')">파일 업로드</button>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <div class="icon">🖼️</div>
+        <p>클릭하거나 파일을 여기에 드래그</p>
+        <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
+        <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
       </div>
-
-      <div class="img-tab-content active" id="tabUrl">
-        <input type="url" id="imgUrl" placeholder="http://img.dongascience.com/letter/202604/..." oninput="onUrlInput()">
-      </div>
-
-      <div class="img-tab-content" id="tabFile">
-        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-          <div class="icon">🖼️</div>
-          <p>클릭하거나 파일을 여기에 드래그</p>
-          <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
-          <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
+      <div id="serverPathWrap" style="display:none; flex-direction:column; gap:6px;">
+        <label style="font-size:11px; color:#888;">저장 파일명</label>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claude_an/</span>
+          <input type="text" id="serverFilename" oninput="onServerFilenameInput()" style="font-size:12px; font-family:monospace; flex:1;" placeholder="파일명.jpg">
         </div>
-        <div id="serverPathWrap" style="display:none; flex-direction:column; gap:6px;">
-          <label style="font-size:11px; color:#888;">저장 파일명</label>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claude_an/</span>
-            <input type="text" id="serverFilename" oninput="onServerFilenameInput()" style="font-size:12px; font-family:monospace; flex:1;" placeholder="파일명.jpg">
-          </div>
-          <button class="btn btn-upload" id="uploadBtn" onclick="uploadToServer()">☁️ 서버에 업로드</button>
-          <div id="uploadStatus" style="display:none; font-size:12px; padding:8px 10px; border-radius:6px;"></div>
-        </div>
+        <button class="btn btn-upload" id="uploadBtn" onclick="uploadToServer()">☁️ 서버에 업로드</button>
+        <div id="uploadStatus" style="display:none; font-size:12px; padding:8px 10px; border-radius:6px;"></div>
       </div>
 
       <div class="img-preview-wrap" id="imgPreviewWrap">
@@ -405,23 +394,6 @@
     </div>
 
     <div class="actions">
-      <div id="imgEmbedOption" style="display:none; background:#f5f5f7; border-radius:8px; padding:12px; gap:8px; flex-direction:column;">
-        <label style="font-size:12px; font-weight:600; color:#555;">HTML에 삽입할 이미지</label>
-        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-weight:400;">
-          <input type="radio" name="imgEmbed" value="server" checked style="margin-top:2px; accent-color:#0071e3;">
-          <span style="font-size:12px; line-height:1.5;">
-            <strong>서버 URL</strong><br>
-            <span style="color:#888;">실제 발송용. 이미지가 서버에 올라가 있어야 합니다.</span>
-          </span>
-        </label>
-        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-weight:400;">
-          <input type="radio" name="imgEmbed" value="local" style="margin-top:2px; accent-color:#0071e3;">
-          <span style="font-size:12px; line-height:1.5;">
-            <strong>로컬 이미지 (base64)</strong><br>
-            <span style="color:#888;">미리보기·내부 확인용. 이메일 발송 시 깨질 수 있습니다.</span>
-          </span>
-        </label>
-      </div>
       <button class="btn btn-primary" onclick="downloadHtml()">⬇ HTML 파일 다운로드</button>
       <button class="btn btn-secondary" onclick="updatePreview()">🔄 미리보기 새로고침</button>
       <div class="toast" id="toast">✅ 다운로드 완료!</div>
@@ -505,29 +477,8 @@
 </body>
 </html>`;
 
-  let activeImgSrc = '';     // 미리보기용 (blob URL 또는 입력 URL)
-  let activeImgBase64 = '';  // 로컬 임베드용 base64
-  let activeImgMode = 'url'; // 'url' | 'file'
-
-  function switchImgTab(tab) {
-    activeImgMode = tab;
-    document.querySelectorAll('.img-tab').forEach((el, i) => {
-      el.classList.toggle('active', (i === 0) === (tab === 'url'));
-    });
-    document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
-    document.getElementById('tabFile').classList.toggle('active', tab === 'file');
-    document.getElementById('imgEmbedOption').style.display = tab === 'file' ? 'flex' : 'none';
-
-    if (tab === 'url') {
-      activeImgSrc = document.getElementById('imgUrl').value.trim();
-    }
-    updatePreview();
-  }
-
-  function onUrlInput() {
-    activeImgSrc = document.getElementById('imgUrl').value.trim();
-    updateImgPreview();
-  }
+  let activeImgSrc = '';    // 미리보기용 blob URL
+  let activeImgBase64 = ''; // 로컬 임베드용 base64
 
   function onFileSelect(event) {
     const file = event.target.files[0];
@@ -637,13 +588,7 @@
   }
 
   function getValues({ forDownload = false } = {}) {
-    let imgUrl = activeImgSrc;
-    if (activeImgMode === 'file' && forDownload) {
-      const choice = document.querySelector('input[name="imgEmbed"]:checked').value;
-      imgUrl = choice === 'server' ? getServerUrl() : activeImgBase64;
-    } else if (activeImgMode === 'file') {
-      imgUrl = activeImgSrc; // 미리보기는 항상 로컬
-    }
+    let imgUrl = forDownload ? (getServerUrl() || activeImgBase64) : activeImgSrc;
     return {
       alt: document.getElementById('altText').value.trim(),
       imgUrl,
