@@ -1,0 +1,5 @@
+SFTP_HOST     = "서버IP"
+SFTP_USER     = "사용자명"
+SFTP_PASSWORD = "비밀번호"
+SFTP_DIR      = "/home/img/www/dongascience/letter/claudean"
+PUBLIC_URL    = "http://img.dongascience.com/letter/claudean"
