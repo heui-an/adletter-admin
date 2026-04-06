@@ -7,6 +7,9 @@ on:
       - 'server.py'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -23,13 +26,12 @@ jobs:
       - name: config.py 생성
         shell: bash
         run: |
-          cat > config.py << 'EOF'
-          SFTP_HOST     = "${{ secrets.SFTP_HOST }}"
-          SFTP_USER     = "${{ secrets.SFTP_USER }}"
-          SFTP_PASSWORD = "${{ secrets.SFTP_PASSWORD }}"
-          SFTP_DIR      = "${{ secrets.SFTP_DIR }}"
-          PUBLIC_URL    = "${{ secrets.PUBLIC_URL }}"
-          EOF
+          printf 'SFTP_HOST     = "%s"\nSFTP_USER     = "%s"\nSFTP_PASSWORD = "%s"\nSFTP_DIR      = "%s"\nPUBLIC_URL    = "%s"\n' \
+            "${{ secrets.SFTP_HOST }}" \
+            "${{ secrets.SFTP_USER }}" \
+            "${{ secrets.SFTP_PASSWORD }}" \
+            "${{ secrets.SFTP_DIR }}" \
+            "${{ secrets.PUBLIC_URL }}" > config.py
 
       - name: EXE 빌드
         run: pyinstaller --onefile --name server server.py
@@ -37,9 +39,8 @@ jobs:
       - name: 릴리즈 생성/업데이트
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
+          tag_name: v1
           name: 서버 최신 빌드
           files: dist/server.exe
           make_latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
