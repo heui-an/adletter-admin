@@ -18,8 +18,8 @@ for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":5000 " ^| findstr "L
     taskkill /f /pid %%a >nul 2>&1
 )
 
-REM 서버 백그라운드 실행
-start "" /b server.exe
+REM 서버 백그라운드 실행 (로그 기록)
+start "" /b cmd /c "server.exe > server.log 2>&1"
 
 REM 서버 뜰 때까지 대기
 timeout /t 3 /nobreak >nul
