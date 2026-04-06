@@ -253,6 +253,24 @@
     background: #e5e5e5;
   }
 
+  .btn-upload {
+    background: #34c759;
+    color: #fff;
+  }
+
+  .btn-upload:hover {
+    background: #2db84f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52,199,89,0.3);
+  }
+
+  .btn-upload:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
   .toast {
     display: none;
     background: #1d1d1f;
@@ -357,9 +375,11 @@
           <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
           <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
         </div>
-        <div id="serverPathWrap" style="display:none; flex-direction:column; gap:4px;">
-          <label style="font-size:11px; color:#888;">서버 저장 경로 <span style="color:#bbb;">(수정 가능)</span></label>
-          <input type="text" id="serverImgUrl" oninput="updatePreview()" style="font-size:12px; font-family: monospace;">
+        <div id="serverPathWrap" style="display:none; flex-direction:column; gap:6px;">
+          <button class="btn btn-upload" id="uploadBtn" onclick="uploadToServer()">☁️ 서버에 업로드</button>
+          <div id="uploadStatus" style="display:none; font-size:12px; padding:8px 10px; border-radius:6px;"></div>
+          <label style="font-size:11px; color:#888; margin-top:2px;">서버 URL <span style="color:#bbb;">(업로드 후 자동 입력)</span></label>
+          <input type="text" id="serverImgUrl" oninput="updatePreview()" style="font-size:12px; font-family: monospace;" placeholder="업로드하면 자동으로 채워집니다">
           <p style="font-size:11px; color:#f59e0b;">⚠️ 미리보기는 로컬 이미지로 표시됩니다. HTML에는 위 서버 URL이 사용됩니다.</p>
         </div>
       </div>
@@ -514,7 +534,10 @@
     if (file && file.type.startsWith('image/')) loadFile(file);
   }
 
+  let uploadedFile = null;
+
   function loadFile(file) {
+    uploadedFile = file;
     // 미리보기용 blob URL
     activeImgSrc = URL.createObjectURL(file);
 
@@ -523,17 +546,63 @@
     reader.onload = (e) => { activeImgBase64 = e.target.result; };
     reader.readAsDataURL(file);
 
-    // 서버 저장 경로 자동 생성
-    const now = new Date();
-    const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const serverUrl = `http://img.dongascience.com/letter/${yyyymm}/${file.name}`;
-    document.getElementById('serverImgUrl').value = serverUrl;
+    // 서버 경로 초기화
+    document.getElementById('serverImgUrl').value = '';
+    document.getElementById('uploadStatus').style.display = 'none';
+    document.getElementById('uploadBtn').disabled = false;
     document.getElementById('serverPathWrap').style.display = 'flex';
 
     // 드롭존 텍스트 업데이트
     document.getElementById('dropZone').querySelector('p').textContent = `📎 ${file.name}`;
 
     updateImgPreview();
+  }
+
+  async function uploadToServer() {
+    if (!uploadedFile) return;
+
+    const btn = document.getElementById('uploadBtn');
+    const status = document.getElementById('uploadStatus');
+
+    btn.disabled = true;
+    btn.textContent = '업로드 중...';
+    status.style.display = 'block';
+    status.style.background = '#f0f7ff';
+    status.style.color = '#0071e3';
+    status.textContent = '서버에 업로드 중입니다...';
+
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+
+      const res = await fetch('http://localhost:5000/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        document.getElementById('serverImgUrl').value = data.url;
+        status.style.background = '#f0fff4';
+        status.style.color = '#16a34a';
+        status.textContent = '✅ 업로드 완료! URL이 자동으로 입력되었습니다.';
+        btn.textContent = '☁️ 다시 업로드';
+        btn.disabled = false;
+        updatePreview();
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (e) {
+      status.style.background = '#fff0f0';
+      status.style.color = '#dc2626';
+      if (e.message && e.message.includes('fetch')) {
+        status.textContent = '❌ 서버에 연결할 수 없습니다. python3 server.py 를 먼저 실행해 주세요.';
+      } else {
+        status.textContent = `❌ 오류: ${e.message}`;
+      }
+      btn.textContent = '☁️ 서버에 업로드';
+      btn.disabled = false;
+    }
   }
 
   function getValues({ forDownload = false } = {}) {
