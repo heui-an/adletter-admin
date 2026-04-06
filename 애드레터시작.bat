@@ -21,9 +21,21 @@ for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":5000 " ^| findstr "L
 REM 서버 백그라운드 실행 (로그 기록)
 start "" /b cmd /c "server.exe > server.log 2>&1"
 
-REM 서버 뜰 때까지 대기
-timeout /t 3 /nobreak >nul
+REM 포트 5000이 실제로 열릴 때까지 대기 (최대 20초)
+set /a count=0
+:wait_loop
+netstat -an | findstr ":5000" | findstr "LISTENING" >nul 2>&1
+if not errorlevel 1 goto server_ready
+set /a count+=1
+if %count% geq 20 (
+    echo 서버 시작 실패. server.log 파일을 확인해주세요.
+    pause
+    exit /b 1
+)
+timeout /t 1 /nobreak >nul
+goto wait_loop
 
+:server_ready
 REM 관리자 페이지 열기
 start https://heui-an.github.io/adletter-admin/
 exit
