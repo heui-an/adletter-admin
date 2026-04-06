@@ -625,9 +625,15 @@
   }
 
   function downloadHtml() {
-    const { alt, imgUrl, linkUrl, filename } = getValues({ forDownload: true });
-    if (!filename) { alert('파일명을 입력해 주세요.'); return; }
+    const { alt, linkUrl, filename } = getValues({ forDownload: true });
 
+    if (!uploadedFile)       { alert('이미지를 업로드해 주세요.'); return; }
+    if (!uploadSuccess)      { alert('서버 업로드가 완료되지 않았습니다.\n업로드 버튼을 눌러 완료 후 다운로드 해주세요.'); return; }
+    if (!alt)                { alert('광고 제목을 입력해 주세요.'); return; }
+    if (!linkUrl)            { alert('연결 링크 URL을 입력해 주세요.'); return; }
+    if (!filename)           { alert('파일명을 입력해 주세요.'); return; }
+
+    const imgUrl = getServerUrl();
     const html = TEMPLATE(alt, imgUrl, linkUrl);
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
