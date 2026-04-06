@@ -368,7 +368,7 @@
       <div id="serverPathWrap" style="display:none; flex-direction:column; gap:6px;">
         <label style="font-size:11px; color:#888;">저장 파일명</label>
         <div style="display:flex; align-items:center; gap:6px;">
-          <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claude_an/</span>
+          <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claudean/</span>
           <input type="text" id="serverFilename" oninput="onServerFilenameInput()" style="font-size:12px; font-family:monospace; flex:1;" placeholder="파일명.jpg">
         </div>
         <button class="btn btn-upload" id="uploadBtn" onclick="uploadToServer()">☁️ 서버에 업로드</button>
@@ -502,6 +502,7 @@
   }
 
   let uploadedFile = null;
+  let uploadSuccess = false;
 
   function loadFile(file) {
     uploadedFile = file;
@@ -513,6 +514,7 @@
     reader.onload = (e) => { activeImgBase64 = e.target.result; };
     reader.readAsDataURL(file);
 
+    uploadSuccess = false;
     // 서버 파일명 자동 생성: 영문이니셜_MMDD.확장자
     const now = new Date();
     const mmdd = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
@@ -561,6 +563,7 @@
         status.textContent = `✅ 업로드 완료! ${data.url}`;
         btn.textContent = '☁️ 다시 업로드';
         btn.disabled = false;
+        uploadSuccess = true;
         updatePreview();
       } else {
         throw new Error(data.error);
@@ -580,7 +583,7 @@
 
   function getServerUrl() {
     const filename = document.getElementById('serverFilename').value.trim();
-    return filename ? `http://img.dongascience.com/letter/claude_an/${filename}` : '';
+    return filename ? `http://img.dongascience.com/letter/claudean/${filename}` : '';
   }
 
   function onServerFilenameInput() {
