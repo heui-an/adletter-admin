@@ -19,7 +19,7 @@ for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":5000 " ^| findstr "L
 )
 
 REM 서버 백그라운드 실행 (로그 기록)
-start "" /b cmd /c "server.exe > server.log 2>&1"
+start "" /b cmd /c ""%~dp0server.exe" > "%~dp0server.log" 2>&1"
 
 REM 포트 5000이 실제로 열릴 때까지 대기 (최대 20초)
 set /a count=0
