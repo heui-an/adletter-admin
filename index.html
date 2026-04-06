@@ -444,6 +444,20 @@
 </div>
 
 <script>
+  // 한글 초성 → 영문 이니셜 변환
+  const CHOSUNG_MAP = ['g','gg','n','d','dd','r','m','b','bb','s','ss','','j','jj','c','k','t','p','h'];
+  function toInitials(str) {
+    return [...str].map(ch => {
+      const code = ch.charCodeAt(0);
+      if (code >= 0xAC00 && code <= 0xD7A3) {
+        return CHOSUNG_MAP[Math.floor((code - 0xAC00) / (21 * 28))];
+      }
+      if (/[a-zA-Z0-9]/.test(ch)) return ch.toLowerCase();
+      if (/[-_]/.test(ch)) return ch;
+      return '';
+    }).join('');
+  }
+
   const TEMPLATE = (alt, imgUrl, linkUrl) => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -548,13 +562,13 @@
     reader.onload = (e) => { activeImgBase64 = e.target.result; };
     reader.readAsDataURL(file);
 
-    // 서버 파일명 자동 생성: 영문_MMDD.확장자
+    // 서버 파일명 자동 생성: 영문이니셜_MMDD.확장자
     const now = new Date();
     const mmdd = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
     const dotIdx = file.name.lastIndexOf('.');
     const base = dotIdx > -1 ? file.name.slice(0, dotIdx) : file.name;
     const ext  = dotIdx > -1 ? file.name.slice(dotIdx) : '';
-    document.getElementById('serverFilename').value = `${base}_${mmdd}${ext}`;
+    document.getElementById('serverFilename').value = `${toInitials(base)}_${mmdd}${ext}`;
     document.getElementById('uploadStatus').style.display = 'none';
     document.getElementById('uploadBtn').disabled = false;
     document.getElementById('serverPathWrap').style.display = 'flex';
