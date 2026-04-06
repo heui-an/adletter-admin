@@ -547,13 +547,12 @@
 
     try {
       const serverFilename = document.getElementById('serverFilename').value.trim() || uploadedFile.name;
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-      formData.append('filename', serverFilename);
+      const base64data = activeImgBase64.split(',')[1];
 
       const res = await fetch('http://localhost:5000/upload', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: serverFilename, data: base64data }),
       });
       const data = await res.json();
 

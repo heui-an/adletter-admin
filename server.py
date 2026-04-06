@@ -81,32 +81,11 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         try:
-            content_type = self.headers.get("Content-Type", "")
-            if "multipart/form-data" not in content_type:
-                raise ValueError("multipart/form-data 형식으로 전송해야 합니다.")
-
-            # multipart 파싱
-            environ = {
-                "REQUEST_METHOD": "POST",
-                "CONTENT_TYPE": content_type,
-                "CONTENT_LENGTH": self.headers.get("Content-Length", "0"),
-            }
-            form = cgi.FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ=environ
-            )
-
-            if "file" not in form:
-                raise ValueError("파일이 없습니다.")
-
-            file_item = form["file"]
-            # 클라이언트에서 지정한 파일명 우선 사용
-            if "filename" in form and form["filename"].value.strip():
-                filename = os.path.basename(form["filename"].value.strip())
-            else:
-                filename = os.path.basename(file_item.filename)
-            data = file_item.file.read()
+            length = int(self.headers.get("Content-Length", "0"))
+            body   = self.rfile.read(length)
+            payload = json.loads(body)
+            filename = os.path.basename(payload["filename"])
+            data     = __import__("base64").b64decode(payload["data"])
 
             url = upload_to_sftp(filename, data)
 
