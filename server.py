@@ -5,11 +5,16 @@
 """
 
 import os
+import sys
 import paramiko
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
-import cgi
 import io
+
+# Windows에서 한글/특수문자 print 시 cp949 인코딩 오류 방지
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 # ── SFTP 설정 (config.py 또는 환경변수에서 읽기) ──────────
 try:
