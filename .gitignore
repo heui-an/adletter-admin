@@ -1,2 +1,4 @@
 config.py
 server.log
+__pycache__/
+
