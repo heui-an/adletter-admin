@@ -7,9 +7,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body {
-    overflow-x: hidden;
-  }
+  html, body { overflow-x: hidden; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -27,20 +25,9 @@
     gap: 12px;
   }
 
-  header .logo {
-    font-size: 13px;
-    color: #888;
-    font-weight: 500;
-  }
-
-  header h1 {
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  header .divider {
-    color: #ccc;
-  }
+  header .logo { font-size: 13px; color: #888; font-weight: 500; }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header .divider { color: #ccc; }
 
   .container {
     display: grid;
@@ -59,10 +46,10 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .panel h2 {
+  .panel > h2 {
     font-size: 14px;
     font-weight: 600;
     color: #555;
@@ -70,6 +57,7 @@
     letter-spacing: 0.05em;
     padding-bottom: 12px;
     border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
   }
 
   .field {
@@ -117,15 +105,9 @@
     align-items: center;
   }
 
-  .filename-row input {
-    flex: 1;
-  }
+  .filename-row input { flex: 1; }
 
-  .ext {
-    font-size: 13px;
-    color: #888;
-    white-space: nowrap;
-  }
+  .ext { font-size: 13px; color: #888; white-space: nowrap; }
 
   .img-preview-wrap {
     margin-top: 4px;
@@ -141,7 +123,7 @@
 
   .img-preview-wrap img {
     max-width: 100%;
-    max-height: 180px;
+    max-height: 160px;
     object-fit: contain;
     display: block;
   }
@@ -153,39 +135,10 @@
     text-align: center;
   }
 
-  .img-input-tabs {
-    display: flex;
-    gap: 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .img-tab {
-    flex: 1;
-    padding: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    background: #f5f5f7;
-    color: #888;
-    border: none;
-    transition: all 0.15s;
-  }
-
-  .img-tab.active {
-    background: #0071e3;
-    color: #fff;
-  }
-
-  .img-tab-content { display: none; }
-  .img-tab-content.active { display: flex; flex-direction: column; gap: 6px; }
-
   .drop-zone {
     border: 2px dashed #ddd;
     border-radius: 8px;
-    padding: 20px 12px;
+    padding: 16px 12px;
     text-align: center;
     cursor: pointer;
     transition: all 0.15s;
@@ -197,21 +150,78 @@
     background: #f0f7ff;
   }
 
-  .drop-zone p {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 6px;
-  }
-
-  .drop-zone .icon { font-size: 24px; }
-
+  .drop-zone p { font-size: 12px; color: #aaa; margin-top: 4px; }
+  .drop-zone .icon { font-size: 20px; }
   .drop-zone input[type="file"] { display: none; }
 
+  /* ── 배너 아이템 ── */
+  .ad-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ad-item {
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fafafa;
+  }
+
+  .ad-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ad-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0071e3;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .btn-remove-ad {
+    background: none;
+    border: 1px solid #ffc0c0;
+    color: #dc2626;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .btn-remove-ad:hover { background: #fff0f0; }
+
+  .btn-add-ad {
+    width: 100%;
+    padding: 10px;
+    background: #f0f7ff;
+    color: #0071e3;
+    border: 1.5px dashed #90c3f7;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .btn-add-ad:hover { background: #e0efff; border-color: #0071e3; }
+
+  /* ── 액션 버튼 ── */
   .actions {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
   }
 
   .btn {
@@ -226,44 +236,26 @@
     cursor: pointer;
     border: none;
     transition: all 0.15s;
+    font-family: inherit;
   }
 
-  .btn-primary {
-    background: #0071e3;
-    color: #fff;
-  }
-
+  .btn-primary { background: #0071e3; color: #fff; }
   .btn-primary:hover {
     background: #0077ed;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0,113,227,0.3);
   }
+  .btn-primary:active { transform: none; box-shadow: none; }
 
-  .btn-primary:active {
-    transform: none;
-    box-shadow: none;
-  }
+  .btn-secondary { background: #f0f0f0; color: #333; }
+  .btn-secondary:hover { background: #e5e5e5; }
 
-  .btn-secondary {
-    background: #f0f0f0;
-    color: #333;
-  }
-
-  .btn-secondary:hover {
-    background: #e5e5e5;
-  }
-
-  .btn-upload {
-    background: #34c759;
-    color: #fff;
-  }
-
+  .btn-upload { background: #34c759; color: #fff; }
   .btn-upload:hover {
     background: #2db84f;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(52,199,89,0.3);
   }
-
   .btn-upload:disabled {
     background: #aaa;
     cursor: not-allowed;
@@ -286,8 +278,8 @@
     animation: fadein 0.2s ease, fadeout 0.3s ease 1.7s forwards;
   }
 
-  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  @keyframes fadeout { to { opacity: 0; } }
+  @keyframes fadein { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  @keyframes fadeout { to { opacity:0; } }
 
   /* ── 우측 프리뷰 패널 ── */
   .preview-panel {
@@ -309,12 +301,7 @@
     flex-shrink: 0;
   }
 
-  .preview-toolbar .dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #ddd;
-  }
-
+  .preview-toolbar .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
   .preview-toolbar .dot.red { background: #ff5f57; }
   .preview-toolbar .dot.yellow { background: #ffbd2e; }
   .preview-toolbar .dot.green { background: #28c840; }
@@ -349,41 +336,19 @@
 
   <!-- 좌측 입력 패널 -->
   <div class="panel">
-    <h2>광고 정보 입력</h2>
+    <h2>광고 배너</h2>
 
     <div class="field">
       <label>광고 제목 <span>이미지 alt 텍스트</span></label>
       <textarea id="altText" rows="2" placeholder="예: (광고) 2026고흥우주항공축제_더현대서울"></textarea>
     </div>
 
-    <div class="field">
-      <label>이미지 <span>메인 배너</span></label>
+    <div class="ad-list" id="adList"></div>
 
-      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-        <div class="icon">🖼️</div>
-        <p>클릭하거나 파일을 여기에 드래그</p>
-        <p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>
-        <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
-      </div>
-      <div id="serverPathWrap" style="display:none; flex-direction:column; gap:6px;">
-        <label style="font-size:11px; color:#888;">저장 파일명</label>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claudean/</span>
-          <input type="text" id="serverFilename" oninput="onServerFilenameInput()" style="font-size:12px; font-family:monospace; flex:1;" placeholder="파일명.jpg">
-        </div>
-        <button class="btn btn-upload" id="uploadBtn" onclick="uploadToServer()">☁️ 서버에 업로드</button>
-        <div id="uploadStatus" style="display:none; font-size:12px; padding:8px 10px; border-radius:6px;"></div>
-      </div>
+    <button class="btn-add-ad" onclick="addAd()">＋ 배너 추가</button>
 
-      <div class="img-preview-wrap" id="imgPreviewWrap">
-        <p class="img-placeholder">이미지를 입력하면 미리보기가 표시됩니다</p>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>연결 링크 URL <span>클릭 시 이동</span></label>
-      <input type="url" id="linkUrl" placeholder="https://...">
-    </div>
+    <button class="btn btn-upload" id="uploadAllBtn" onclick="uploadAll()">☁️ 전체 서버 업로드</button>
+    <div id="uploadAllStatus" style="display:none; font-size:12px; padding:8px 10px; border-radius:6px;"></div>
 
     <div class="field">
       <label>파일명 <span>저장할 파일 이름</span></label>
@@ -416,21 +381,31 @@
 </div>
 
 <script>
-  // 한글 초성 → 영문 이니셜 변환
-  const CHOSUNG_MAP = ['g','gg','n','d','dd','r','m','b','bb','s','ss','','j','jj','c','k','t','p','h'];
-  function toInitials(str) {
-    return [...str].map(ch => {
-      const code = ch.charCodeAt(0);
-      if (code >= 0xAC00 && code <= 0xD7A3) {
-        return CHOSUNG_MAP[Math.floor((code - 0xAC00) / (21 * 28))];
-      }
-      if (/[a-zA-Z0-9]/.test(ch)) return ch.toLowerCase();
-      if (/[-_]/.test(ch)) return ch;
-      return '';
-    }).join('');
-  }
+// ── 한글 초성 → 영문 이니셜 변환 ──────────────────────────────
+const CHOSUNG_MAP = ['g','gg','n','d','dd','r','m','b','bb','s','ss','','j','jj','c','k','t','p','h'];
+function toInitials(str) {
+  return [...str].map(ch => {
+    const code = ch.charCodeAt(0);
+    if (code >= 0xAC00 && code <= 0xD7A3)
+      return CHOSUNG_MAP[Math.floor((code - 0xAC00) / (21 * 28))];
+    if (/[a-zA-Z0-9]/.test(ch)) return ch.toLowerCase();
+    if (/[-_]/.test(ch)) return ch;
+    return '';
+  }).join('');
+}
 
-  const TEMPLATE = (alt, imgUrl, linkUrl) => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── 템플릿 ────────────────────────────────────────────────────
+const BANNER_ROW = (alt, imgUrl, linkUrl) =>
+  `<tr><td style="padding:0;margin:0;line-height:0;"><a href="${linkUrl}" target="_blank"><img src="${imgUrl}" alt="${alt}" width="700" border="0" /></a></td></tr>`;
+
+function TEMPLATE(adsData) {
+  const rows = adsData.map(ad => BANNER_ROW(ad.alt, ad.imgUrl, ad.linkUrl)).join('\n                                ');
+  return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -452,9 +427,7 @@
                                 <tr>
                                     <td width="500" valign="top" style="line-height:0;"><h1 style="margin:0px;padding:0 0 20px 0; text-align:center"> <a href="http://www.dongascience.com" target="_blank"><img src="http://img.dongascience.com/news2015/images/letter/letter_logo2016.gif" alt="동아사이언스" width="139" style="padding:0px;margin:0;border:0px;"></a> </h1></td>
                                 </tr>
-                                <tr>
-                                    <td style="padding:0;margin:0;line-height:0;"><a href="${linkUrl}" target="_blank"><img src="${imgUrl}" alt="${alt}" width="700" border="0" /></a></td>
-                                </tr>
+                                ${rows}
                                 <tr>
                                     <td width="100%" style="padding:20px 0 0 0; color:#888; font-size:12px; letter-spacing:-1px; line-height:18px;" align="left"><img width="99" alt="" src="http://img.dongascience.com/news2015/images/letter/letter_logo_footer.gif" height="21"><br /><br />
                                         본 메일은 동아사이언스가 이전에 회원님의 이메일 수신동의여부를 확인한 결과 수신을 동의하였기에 발송되었습니다. <span style="color:#555">수신을 원치 않으시면 <a style="text-decoration:none" href="https://www.dongascience.com/ad/refuse/[$email]" target="_blank"><strong style="color:#555">[여기]</strong></a>를 클릭</span>하여 주시기 바랍니다. To unsubscribe this e-mail, click here 본 메일은 발신전용으로 회신을 통한 문의는 처리되지 않으며, <span style="color:#555">문의사항은 <a style="text-decoration:none" href="http://help.dongascience.com" target="_blank"><strong style="color:#555">[고객센터]</strong></a>를 클릭</span>하세요.<br />
@@ -476,196 +449,425 @@
     </div>
 </body>
 </html>`;
+}
 
-  let activeImgSrc = '';    // 미리보기용 blob URL
-  let activeImgBase64 = ''; // 로컬 임베드용 base64
+// ── 상태 ─────────────────────────────────────────────────────
+let ads = [];
+let _nextId = 1;
 
-  function onFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) loadFile(file);
+function createAd() {
+  return {
+    id: _nextId++,
+    file: null,
+    imgSrc: '',
+    imgBase64: '',
+    serverFilename: '',
+    alt: '',
+    linkUrl: '',
+    uploadSuccess: false,
+    uploadStatusShow: false,
+    uploadStatusBg: '',
+    uploadStatusColor: '',
+    uploadStatusText: '',
+    widthInfo: '',
+  };
+}
+
+// ── DOM → 상태 동기화 (재렌더링 전 호출) ─────────────────────
+function syncAdsFromDOM() {
+  ads.forEach(ad => {
+    const linkEl = document.getElementById(`linkUrl_${ad.id}`);
+    const fnEl   = document.getElementById(`serverFilename_${ad.id}`);
+    if (linkEl) ad.linkUrl = linkEl.value;
+    if (fnEl)  ad.serverFilename = fnEl.value;
+  });
+}
+
+// ── 렌더링 ────────────────────────────────────────────────────
+function renderAdList() {
+  const container = document.getElementById('adList');
+  container.innerHTML = ads.map((ad, idx) => adItemHTML(ad, idx)).join('');
+
+  // 이벤트 재연결
+  ads.forEach(ad => {
+    const fi = document.getElementById(`fileInput_${ad.id}`);
+    if (fi) fi.addEventListener('change', e => onFileSelect(e, ad.id));
+
+    const linkEl = document.getElementById(`linkUrl_${ad.id}`);
+    if (linkEl) linkEl.addEventListener('input', updatePreview);
+  });
+
+  updatePreview();
+}
+
+function adItemHTML(ad, index) {
+  const showRemove = ads.length > 1;
+  return `
+<div class="ad-item">
+  <div class="ad-item-header">
+    <span class="ad-num">배너 ${index + 1}</span>
+    ${showRemove ? `<button class="btn-remove-ad" onclick="removeAd(${ad.id})">✕ 삭제</button>` : ''}
+  </div>
+
+  <div class="field">
+    <label>이미지 <span>메인 배너</span></label>
+    <div class="drop-zone" id="dropZone_${ad.id}"
+         onclick="document.getElementById('fileInput_${ad.id}').click()"
+         ondragover="onDragOver(event,${ad.id})"
+         ondragleave="onDragLeave(event,${ad.id})"
+         ondrop="onDrop(event,${ad.id})">
+      <div class="icon">🖼️</div>
+      <p>${ad.file ? '📎 ' + escHtml(ad.file.name) : '클릭하거나 파일을 여기에 드래그'}</p>
+      ${ad.file ? '' : '<p style="font-size:11px; margin-top:2px;">JPG, PNG, GIF 지원</p>'}
+      <input type="file" id="fileInput_${ad.id}" accept="image/*">
+    </div>
+
+    <div id="widthInfo_${ad.id}" style="display:${ad.widthInfo ? 'block' : 'none'}; font-size:12px; padding:8px 10px; border-radius:6px; background:#e8f4fd; color:#1e6fa8;">${escHtml(ad.widthInfo || '')}</div>
+
+    <div id="serverPathWrap_${ad.id}" style="display:${ad.file ? 'flex' : 'none'}; flex-direction:column; gap:6px;">
+      <label style="font-size:11px; color:#888;">저장 파일명</label>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:11px; color:#aaa; font-family:monospace; white-space:nowrap;">…/claudean/</span>
+        <input type="text" id="serverFilename_${ad.id}"
+               value="${escHtml(ad.serverFilename)}"
+               placeholder="파일명.jpg"
+               style="font-size:12px; font-family:monospace; flex:1;"
+               oninput="onServerFilenameInput(${ad.id})">
+      </div>
+      <div id="uploadStatus_${ad.id}" style="display:${ad.uploadStatusShow ? 'block' : 'none'}; font-size:12px; padding:8px 10px; border-radius:6px; background:${ad.uploadStatusBg}; color:${ad.uploadStatusColor};">${ad.uploadStatusText}</div>
+    </div>
+
+    <div class="img-preview-wrap">
+      ${ad.imgSrc
+        ? `<img src="${ad.imgSrc}" alt="미리보기" onerror="this.parentElement.innerHTML='<p class=\\'img-placeholder\\'>이미지를 불러올 수 없습니다</p>'">`
+        : '<p class="img-placeholder">이미지를 입력하면 미리보기가 표시됩니다</p>'}
+    </div>
+  </div>
+
+  <div class="field">
+    <label>연결 링크 URL <span>클릭 시 이동</span></label>
+    <input type="url" id="linkUrl_${ad.id}" value="${escHtml(ad.linkUrl)}" placeholder="https://...">
+  </div>
+</div>`;
+}
+
+// ── 배너 추가 / 삭제 ──────────────────────────────────────────
+function addAd() {
+  syncAdsFromDOM();
+  ads.push(createAd());
+  renderAdList();
+}
+
+function removeAd(id) {
+  if (ads.length <= 1) return;
+  syncAdsFromDOM();
+  ads = ads.filter(a => a.id !== id);
+  renderAdList();
+}
+
+// ── 파일 처리 ─────────────────────────────────────────────────
+function onFileSelect(event, id) {
+  const file = event.target.files[0];
+  if (file) loadFile(file, id);
+}
+
+function onDragOver(e, id) {
+  e.preventDefault();
+  document.getElementById(`dropZone_${id}`)?.classList.add('dragover');
+}
+
+function onDragLeave(e, id) {
+  document.getElementById(`dropZone_${id}`)?.classList.remove('dragover');
+}
+
+function onDrop(e, id) {
+  e.preventDefault();
+  document.getElementById(`dropZone_${id}`)?.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadFile(file, id);
+}
+
+function loadFile(file, id) {
+  const ad = ads.find(a => a.id === id);
+  if (!ad) return;
+
+  syncAdsFromDOM();
+
+  ad.file = file;
+  ad.imgSrc = URL.createObjectURL(file);
+  ad.uploadSuccess = false;
+  ad.uploadStatusShow = false;
+  ad.widthInfo = '';
+
+  // 서버 파일명: 영문있으면 영문명_YYMMDD_HHMMSS, 한글뿐이면 adletter_YYMMDD_HHMMSS
+  const now = new Date();
+  const p2 = x => String(x).padStart(2,'0');
+  const yymmdd = String(now.getFullYear()).slice(2) + p2(now.getMonth()+1) + p2(now.getDate());
+  const hhmmss = p2(now.getHours()) + p2(now.getMinutes()) + p2(now.getSeconds());
+  const dotIdx = file.name.lastIndexOf('.');
+  const ext = (dotIdx > -1 ? file.name.slice(dotIdx) : '.jpg').toLowerCase();
+  const cleaned = (dotIdx > -1 ? file.name.slice(0, dotIdx) : file.name)
+                    .normalize('NFC')
+                    .replace(/[^A-Za-z0-9]+/g, '_')
+                    .replace(/^_+|_+$/g, '')
+                    .toLowerCase();
+  const slug = /[a-z]/.test(cleaned) ? cleaned : '';
+  ad.serverFilename = `${slug || 'adletter'}_${yymmdd}_${hhmmss}${ext}`;
+
+  const reader = new FileReader();
+  reader.onload = e => { ad.imgBase64 = e.target.result; };
+  reader.readAsDataURL(file);
+
+  renderAdList();
+
+  // 이미지 가로 폭 체크 (4가지 조건)
+  const isGif = file.type === 'image/gif';
+  const probe = new Image();
+  probe.onload = () => {
+    const w = probe.naturalWidth;
+    const infoEl = document.getElementById(`widthInfo_${id}`);
+    if (!infoEl) return;
+    infoEl.style.display = 'block';
+    if (w < 700) {
+      infoEl.style.background = '#fff7ed'; infoEl.style.color = '#c2410c';
+      infoEl.textContent = `⚠️ 가로 ${w}px — 권장(700px)보다 작아 메일에서 흐리게 보일 수 있어요.`;
+    } else if (w > 700) {
+      infoEl.style.background = '#eff6ff'; infoEl.style.color = '#1d4ed8';
+      infoEl.textContent = isGif
+        ? `ℹ️ 가로 ${w}px (GIF) — 애니메이션 보존을 위해 원본 유지, 700px로 맞춰 표시됩니다.`
+        : `ℹ️ 가로 ${w}px — 업로드 시 700px로 자동 축소됩니다.`;
+    } else {
+      infoEl.style.background = '#f0fdf4'; infoEl.style.color = '#15803d';
+      infoEl.textContent = `✅ 가로 700px — 권장 크기입니다.`;
+    }
+  };
+  probe.src = ad.imgSrc;
+}
+
+function onServerFilenameInput(id) {
+  const ad = ads.find(a => a.id === id);
+  if (ad && ad.uploadSuccess) {
+    ad.uploadSuccess = false;
+    ad.uploadStatusShow = false;
+    const s = document.getElementById(`uploadStatus_${id}`);
+    if (s) s.style.display = 'none';
   }
+  updatePreview();
+}
 
-  function onDragOver(e) {
-    e.preventDefault();
-    document.getElementById('dropZone').classList.add('dragover');
-  }
+// ── 이미지 전처리 ─────────────────────────────────────────────
+function shrinkForUpload(file) {
+  return new Promise(resolve => {
+    if (file.type === 'image/gif') { resolve(file); return; }
+    const outType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      if (img.naturalWidth <= 700) { URL.revokeObjectURL(url); resolve(file); return; }
+      const cw = 700;
+      const ch = Math.round(img.naturalHeight * (700 / img.naturalWidth));
+      const canvas = document.createElement('canvas');
+      canvas.width = cw; canvas.height = ch;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, cw, ch);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(blob => resolve(blob || file), outType, 0.9);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
 
-  function onDragLeave(e) {
-    document.getElementById('dropZone').classList.remove('dragover');
-  }
-
-  function onDrop(e) {
-    e.preventDefault();
-    document.getElementById('dropZone').classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) loadFile(file);
-  }
-
-  let uploadedFile = null;
-  let uploadSuccess = false;
-
-  function loadFile(file) {
-    uploadedFile = file;
-    // 미리보기용 blob URL
-    activeImgSrc = URL.createObjectURL(file);
-
-    // 로컬 임베드용 base64 별도 저장
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => { activeImgBase64 = e.target.result; };
-    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
 
-    uploadSuccess = false;
-    // 서버 파일명 자동 생성: 영문이니셜_MMDD.확장자
-    const now = new Date();
-    const mmdd = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
-    const dotIdx = file.name.lastIndexOf('.');
-    const base = dotIdx > -1 ? file.name.slice(0, dotIdx) : file.name;
-    const ext  = dotIdx > -1 ? file.name.slice(dotIdx) : '';
-    document.getElementById('serverFilename').value = `${toInitials(base)}_${mmdd}${ext}`;
-    document.getElementById('uploadStatus').style.display = 'none';
-    document.getElementById('uploadBtn').disabled = false;
-    document.getElementById('serverPathWrap').style.display = 'flex';
+// ── 업로드 ───────────────────────────────────────────────────
+async function uploadOne(ad) {
+  if (!ad || !ad.file) return;
 
-    // 드롭존 텍스트 업데이트
-    document.getElementById('dropZone').querySelector('p').textContent = `📎 ${file.name}`;
+  const fnEl = document.getElementById(`serverFilename_${ad.id}`);
+  if (fnEl) ad.serverFilename = fnEl.value;
 
-    updateImgPreview();
-  }
-
-  async function uploadToServer() {
-    if (!uploadedFile) return;
-
-    const btn = document.getElementById('uploadBtn');
-    const status = document.getElementById('uploadStatus');
-
-    btn.disabled = true;
-    btn.textContent = '업로드 중...';
+  const status = document.getElementById(`uploadStatus_${ad.id}`);
+  if (status) {
     status.style.display = 'block';
     status.style.background = '#f0f7ff';
     status.style.color = '#0071e3';
-    status.textContent = '서버에 업로드 중입니다...';
+    status.textContent = '업로드 중...';
+  }
 
+  const serverFilename = ad.serverFilename || ad.file.name;
+  const uploadBlob = await shrinkForUpload(ad.file);
+  const base64data = await blobToBase64(uploadBlob);
+
+  const res = await fetch('http://localhost:5000/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: serverFilename, data: base64data }),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error);
+
+  ad.uploadSuccess = true;
+  ad.uploadStatusShow = true;
+  ad.uploadStatusBg = '#f0fff4';
+  ad.uploadStatusColor = '#16a34a';
+  ad.uploadStatusText = `✅ ${data.url}`;
+
+  if (status) {
+    status.style.background = '#f0fff4';
+    status.style.color = '#16a34a';
+    status.textContent = `✅ ${data.url}`;
+  }
+}
+
+async function uploadAll() {
+  const targets = ads.filter(a => a.file);
+  const btn    = document.getElementById('uploadAllBtn');
+  const status = document.getElementById('uploadAllStatus');
+
+  if (!targets.length) {
+    status.style.display = 'block';
+    status.style.background = '#fff8e0';
+    status.style.color = '#b45309';
+    status.textContent = '⚠️ 이미지를 먼저 추가해 주세요.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '업로드 중...';
+  status.style.display = 'block';
+  status.style.background = '#f0f7ff';
+  status.style.color = '#0071e3';
+  status.textContent = `0 / ${targets.length} 업로드 중...`;
+
+  let done = 0, failed = 0;
+  await Promise.all(targets.map(async ad => {
     try {
-      const serverFilename = document.getElementById('serverFilename').value.trim() || uploadedFile.name;
-      const base64data = activeImgBase64.split(',')[1];
-
-      const res = await fetch('http://localhost:5000/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: serverFilename, data: base64data }),
-      });
-      const data = await res.json();
-
-      if (data.ok) {
-        status.style.background = '#f0fff4';
-        status.style.color = '#16a34a';
-        status.textContent = `✅ 업로드 완료! ${data.url}`;
-        btn.textContent = '☁️ 다시 업로드';
-        btn.disabled = false;
-        uploadSuccess = true;
-        updatePreview();
-      } else {
-        throw new Error(data.error);
+      await uploadOne(ad);
+      done++;
+    } catch(e) {
+      failed++;
+      ad.uploadSuccess = false;
+      const s = document.getElementById(`uploadStatus_${ad.id}`);
+      if (s) {
+        s.style.display = 'block';
+        s.style.background = '#fff0f0';
+        s.style.color = '#dc2626';
+        s.textContent = (e.message && e.message.includes('fetch'))
+          ? '❌ 서버에 연결할 수 없습니다. 애드레터시작 파일을 먼저 실행해 주세요.'
+          : `❌ 오류: ${e.message}`;
       }
-    } catch (e) {
-      status.style.background = '#fff0f0';
-      status.style.color = '#dc2626';
-      if (e.message && e.message.includes('fetch')) {
-        status.textContent = '❌ 서버에 연결할 수 없습니다. 애드레터시작 파일을 먼저 실행해 주세요.';
-      } else {
-        status.textContent = `❌ 오류: ${e.message}`;
-      }
-      btn.textContent = '☁️ 서버에 업로드';
-      btn.disabled = false;
     }
+    status.textContent = `${done + failed} / ${targets.length} 처리 중...`;
+  }));
+
+  if (failed === 0) {
+    status.style.background = '#f0fff4';
+    status.style.color = '#16a34a';
+    status.textContent = `✅ ${done}개 모두 업로드 완료!`;
+  } else {
+    status.style.background = '#fff0f0';
+    status.style.color = '#dc2626';
+    status.textContent = `⚠️ ${done}개 성공 / ${failed}개 실패`;
   }
 
-  function getServerUrl() {
-    const filename = document.getElementById('serverFilename').value.trim();
-    return filename ? `http://img.dongascience.com/letter/claudean/${filename}` : '';
-  }
+  btn.textContent = '☁️ 전체 서버 업로드';
+  btn.disabled = false;
+  updatePreview();
+}
 
-  function onServerFilenameInput() {
-    updatePreview();
-  }
+// ── 미리보기 ──────────────────────────────────────────────────
+function getAdServerUrl(ad) {
+  const fn = document.getElementById(`serverFilename_${ad.id}`)?.value?.trim() || ad.serverFilename;
+  return fn ? `http://img.dongascience.com/letter/claudean/${fn}` : '';
+}
 
-  function getValues({ forDownload = false } = {}) {
-    let imgUrl = forDownload ? (getServerUrl() || activeImgBase64) : activeImgSrc;
-    return {
-      alt: document.getElementById('altText').value.trim(),
-      imgUrl,
-      linkUrl: document.getElementById('linkUrl').value.trim(),
-      filename: document.getElementById('filename').value.trim(),
-    };
-  }
-
-  function updateImgPreview() {
-    const wrap = document.getElementById('imgPreviewWrap');
-    if (activeImgSrc) {
-      wrap.innerHTML = `<img src="${activeImgSrc}" alt="미리보기" onerror="this.parentElement.innerHTML='<p class=\\'img-placeholder\\'>이미지를 불러올 수 없습니다</p>'">`;
-    } else {
-      wrap.innerHTML = '<p class="img-placeholder">이미지를 입력하면 미리보기가 표시됩니다</p>';
-    }
-    updatePreview();
-  }
-
-  function updatePreview() {
-    const { alt, imgUrl, linkUrl } = getValues();
-    const html = TEMPLATE(alt, imgUrl, linkUrl);
-    const frame = document.getElementById('previewFrame');
-    frame.srcdoc = html;
-
-    frame.onload = () => {
-      try {
-        const h = frame.contentDocument.body.scrollHeight;
-        frame.style.height = Math.max(h + 20, 400) + 'px';
-      } catch(e) {}
-    };
-  }
-
-  function downloadHtml() {
-    const { alt, linkUrl, filename } = getValues({ forDownload: true });
-
-    if (!uploadedFile)       { alert('이미지를 업로드해 주세요.'); return; }
-    if (!uploadSuccess)      { alert('서버 업로드가 완료되지 않았습니다.\n업로드 버튼을 눌러 완료 후 다운로드 해주세요.'); return; }
-    if (!alt)                { alert('광고 제목을 입력해 주세요.'); return; }
-    if (!linkUrl)            { alert('연결 링크 URL을 입력해 주세요.'); return; }
-    if (!filename)           { alert('파일명을 입력해 주세요.'); return; }
-
-    const imgUrl = getServerUrl();
-    const html = TEMPLATE(alt, imgUrl, linkUrl);
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename.endsWith('.html') ? filename : filename + '.html';
-    a.click();
-    URL.revokeObjectURL(a.href);
-
-    const toast = document.getElementById('toast');
-    toast.classList.remove('show');
-    void toast.offsetWidth;
-    toast.classList.add('show');
-  }
-
-  ['altText', 'linkUrl'].forEach(id => {
-    document.getElementById(id).addEventListener('input', updatePreview);
+function updatePreview() {
+  // 텍스트 입력 상태 동기화 (재렌더링 없이)
+  ads.forEach(ad => {
+    const linkEl = document.getElementById(`linkUrl_${ad.id}`);
+    if (linkEl) ad.linkUrl = linkEl.value;
   });
 
-  function scaleIframe() {
-    const wrap = document.querySelector('.preview-frame-wrap');
-    const frame = document.getElementById('previewFrame');
-    const available = wrap.clientWidth - 48; // 24px padding 양쪽
-    const scale = Math.min(1, available / 780);
-    const offsetX = (available - 780) / 2; // 중앙 정렬 오프셋
-    frame.style.transform = `translateX(${offsetX}px) scale(${scale})`;
-    frame.style.transformOrigin = 'top left';
-    frame.style.marginBottom = `${(frame.offsetHeight * scale - frame.offsetHeight)}px`;
-  }
+  const commonAlt = document.getElementById('altText').value;
+  const adsData = ads.map(ad => ({
+    alt: commonAlt,
+    imgUrl: ad.imgSrc || '',
+    linkUrl: ad.linkUrl,
+  }));
 
-  new ResizeObserver(scaleIframe).observe(document.querySelector('.preview-frame-wrap'));
+  const frame = document.getElementById('previewFrame');
+  frame.srcdoc = TEMPLATE(adsData);
+  frame.onload = () => {
+    try {
+      const h = frame.contentDocument.body.scrollHeight;
+      frame.style.height = Math.max(h + 20, 400) + 'px';
+    } catch(e) {}
+  };
+}
 
-  updatePreview();
-  scaleIframe();
+// ── 다운로드 ──────────────────────────────────────────────────
+function downloadHtml() {
+  ads.forEach(ad => {
+    const linkEl = document.getElementById(`linkUrl_${ad.id}`);
+    if (linkEl) ad.linkUrl = linkEl.value;
+  });
+
+  const commonAlt = document.getElementById('altText').value.trim();
+  const filename  = document.getElementById('filename').value.trim();
+
+  if (ads.some(a => !a.file))          { alert('모든 배너에 이미지를 추가해 주세요.'); return; }
+  if (ads.some(a => !a.uploadSuccess)) { alert('모든 배너의 서버 업로드를 완료해 주세요.'); return; }
+  if (!commonAlt)                       { alert('광고 제목을 입력해 주세요.'); return; }
+  if (ads.some(a => !a.linkUrl))       { alert('모든 배너의 연결 링크 URL을 입력해 주세요.'); return; }
+  if (!filename)                        { alert('파일명을 입력해 주세요.'); return; }
+
+  const adsData = ads.map(ad => ({
+    alt: commonAlt,
+    imgUrl: getAdServerUrl(ad),
+    linkUrl: ad.linkUrl,
+  }));
+
+  const html = TEMPLATE(adsData);
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename.endsWith('.html') ? filename : filename + '.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  const toast = document.getElementById('toast');
+  toast.classList.remove('show');
+  void toast.offsetWidth;
+  toast.classList.add('show');
+}
+
+// ── iframe 스케일 ──────────────────────────────────────────────
+function scaleIframe() {
+  const wrap  = document.querySelector('.preview-frame-wrap');
+  const frame = document.getElementById('previewFrame');
+  const available = wrap.clientWidth - 48;
+  const scale = Math.min(1, available / 780);
+  const offsetX = (available - 780) / 2;
+  frame.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+  frame.style.transformOrigin = 'top left';
+  frame.style.marginBottom = `${(frame.offsetHeight * scale - frame.offsetHeight)}px`;
+}
+
+// ── 초기화 ────────────────────────────────────────────────────
+document.getElementById('altText').addEventListener('input', updatePreview);
+ads.push(createAd());
+renderAdList();
+new ResizeObserver(scaleIframe).observe(document.querySelector('.preview-frame-wrap'));
 </script>
 </body>
 </html>
